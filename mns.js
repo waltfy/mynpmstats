@@ -82,7 +82,7 @@ var MNS = React.createClass({
     });
 
     var createPackageListItem = (function (pack, index) {
-      return <li key={ index }>{ pack } <a href='#' onClick={ this.removePackage.bind(this, pack) }>&#x2716;</a></li>;
+      return <li key={ index }>{ pack } &nbsp; <a href='#' onClick={ this.removePackage.bind(this, pack) }>&#x2716;</a></li>;
     }).bind(this);
 
     var createPackageTableItem = (function (pack, index) {
