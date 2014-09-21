@@ -131,6 +131,10 @@ var MNS = React.createClass({
             </tr>
           </tfoot>
         </table>
+        <footer>
+          <br/>
+          <small>Another useless/silly thing built with &hearts; by <a href='http://www.twitter.com/waltfy'>waltfy</a></small>
+        </footer>
       </div>
     );
   }
