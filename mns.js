@@ -27,6 +27,7 @@ var MNS = React.createClass({
 
   addPackage: function (e) {
     if (typeof e.keyCode !== 'undefined' && e.keyCode !== 13) return;
+    if (this.state.name === '') return alert('Add a package name, fool.');
     var packages = this.state.packages;
     packages[this.state.name] = 0;
     this.setState({ packages: packages, name: '' });
