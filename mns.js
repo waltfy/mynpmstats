@@ -107,7 +107,7 @@ var MNS = React.createClass({
         <button onClick={ this.addPackage }>Add +</button>
         <hr/>
         <h2>manage packages</h2>
-        { packageKeys.length !== 0 ? <a href='#' onClick={ this.clearPackages }>remove all &#x2716;</a> : '' }
+        { packageKeys.length > 1 ? <a href='#' onClick={ this.clearPackages }>remove all &#x2716;</a> : '' }
         <ul>
           { packageKeys.length !== 0 ? packageKeys.map(createPackageListItem) : <li>No packages added. Add some old sport.</li> }
         </ul>
