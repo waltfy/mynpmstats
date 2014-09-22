@@ -40,17 +40,20 @@ var MNS = React.createClass({
     if (this.state.name === '') return alert('Add a package name, fool.');
     var packages = this.state.packages;
     packages[this.state.name] = 0;
-    this.setState({ packages: packages, name: '' }, this.persist.bind(this));
+    this.setState({ packages: packages, name: '' }, function () {
+      this.persist();
+      this.fetchStats();
+    }.bind(this));
   },
 
   removePackage: function (pack, e) {
     var packages = this.state.packages;
     delete packages[pack];
-    this.setState({ packages: packages }, this.persist.bind(this));
+    this.setState({ packages: packages }, this.persist.bind(MNS));
   },
 
   clearPackages: function () {
-    this.setState({ packages: {} }, this.persist.bind(this));
+    this.setState({ packages: {} }, this.persist.bind(MNS));
   },
 
   fetchStats: function () {
@@ -131,17 +134,21 @@ var MNS = React.createClass({
         </p>
         <a href='#' onClick={ this.fetchStats }>fetch &#10153;</a>
         <table>
-          <tr>
-            <th>Package</th>
-            <th>Downloads</th>
-          </tr>
-          { packageKeys.map(createPackageTableItem) }
-          <tfoot>
+          <thead>
+            <tr>
+              <th>Package</th>
+              <th>Downloads</th>
+            </tr>
+           </thead>
+           <tfoot>
             <tr>
               <td><b>TOTAL</b></td>
               <td style={ cellStyle }>{ packageKeys.map(getDownloads).reduce(sum, 0) }</td>
             </tr>
           </tfoot>
+          <tbody>
+            { packageKeys.map(createPackageTableItem) }
+          </tbody>
         </table>
         <footer>
           <br/>
