@@ -133,7 +133,7 @@ var MNS = React.createClass({
         { packageKeys.length > 1 ? <a href='#' onClick={ this.clearPackages }>remove all &#x2716;</a> : '' }
         <hr/>
         <h2>Stats</h2>
-        <p>Time scale
+        <p>I wanna check downloads for the last
           <select onChange={ this.setTimeScale } value={ this.state.timeScale }>
             { createTimeScaleOptions }
           </select>
