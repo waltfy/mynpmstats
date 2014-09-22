@@ -13,12 +13,15 @@ var MNS = React.createClass({
     return {
       packages: JSON.parse(localStorage.getItem("packages")) || {},
       name: '',
-      timeScale: 'last-month'
+      timeScale: JSON.parse(localStorage.getItem("timeScale")) || 'last-month'
     };
   },
 
   persist: function () {
-    if (supportsLocalStorage) localStorage.setItem("packages", JSON.stringify(this.state.packages));
+    if (supportsLocalStorage) {
+      localStorage.setItem("packages", JSON.stringify(this.state.packages));
+      localStorage.setItem("timeScale", JSON.stringify(this.state.timeScale));
+    }
   },
 
   handlePackageNameChange: function (e) {
@@ -26,7 +29,10 @@ var MNS = React.createClass({
   },
 
   setTimeScale: function (e) {
-    this.setState({ timeScale: e.target.value }, this.fetchStats);
+    this.setState({ timeScale: e.target.value }, function () {
+      this.fetchStats();
+      this.persist();
+    }.bind(this));
   },
 
   addPackage: function (e) {
@@ -107,7 +113,7 @@ var MNS = React.createClass({
     return (
       <div>
         <h1>mynpmstats</h1>
-        <p><small>{ supportsLocalStorage ? 'You\'re in luck, your browser supports local storage! :)' : 'Warning: your browser does not support local storage. :(' }</small></p>
+        <p><small>{ supportsLocalStorage ? 'You\'re in luck, your browser supports local storage! :)' : 'Damn. Your browser does not support local storage. :(' }</small></p>
         <input onChange={ this.handlePackageNameChange } value={ this.state.name } onKeyUp={ this.addPackage } placeholder='Package name...'/>
         <button onClick={ this.addPackage }>Add +</button>
         <hr/>
@@ -139,7 +145,7 @@ var MNS = React.createClass({
         </table>
         <footer>
           <br/>
-          <small>Another useless/silly thing built with &hearts; by <a href='http://www.twitter.com/waltfy'>waltfy</a></small>
+          <small>Another useless/silly thing built with &hearts; by <a href='http://www.twitter.com/waltfy'>waltfy</a>. Although... it needs a bit more love.</small>
         </footer>
       </div>
     );
