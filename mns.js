@@ -12,6 +12,7 @@ var MNS = React.createClass({
   getInitialState: function () {
     return {
       packages: JSON.parse(localStorage.getItem("packages")) || {},
+      fetched: [],
       name: '',
       timeScale: JSON.parse(localStorage.getItem("timeScale")) || 'last-month'
     };
@@ -29,7 +30,7 @@ var MNS = React.createClass({
   },
 
   setTimeScale: function (e) {
-    this.setState({ timeScale: e.target.value }, function () {
+    this.setState({ timeScale: e.target.value, fetched: [] }, function () {
       this.fetchStats();
       this.persist();
     }.bind(this));
@@ -61,15 +62,19 @@ var MNS = React.createClass({
     Object.keys(this.state.packages).forEach(function (pack) {
 
       var self = this;
+      var fetched = this.state.fetched;
       var url = 'https://api.npmjs.org/downloads/point/' + this.state.timeScale + '/' + pack;
       var req = new XMLHttpRequest();
+
+      if (fetched.indexOf(pack) >= 0) return;
 
       req.open('GET', url, true);
 
       req.onload = function () {
         var packages = self.state.packages;
         packages[pack] = JSON.parse(req.responseText).downloads;
-        self.setState({ packages: packages }, self.persist.bind(this));
+        fetched.push(pack);
+        self.setState({ packages: packages,  }, self.persist.bind(this));
       };
 
       req.onerror = function () {
