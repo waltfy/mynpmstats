@@ -156,7 +156,6 @@ var MNS = React.createClass({
           </tbody>
         </table>
         <br/>
-        <a href='#' onClick={ this.fetchStats }>fetch data &#10153;</a>
         <hr/>
         <footer>
           <br/>
