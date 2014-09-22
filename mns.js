@@ -124,12 +124,13 @@ var MNS = React.createClass({
         <p><small>{ supportsLocalStorage ? 'You\'re in luck, your browser supports local storage! :)' : 'Damn. Your browser does not support local storage. :(' }</small></p>
         <input onChange={ this.handlePackageNameChange } value={ this.state.name } onKeyUp={ this.addPackage } placeholder='Package name...'/>
         <button onClick={ this.addPackage }>Add +</button>
+        <p><small>Add stuff. e.g. <code>async</code>, <code>request</code> or <code>chalk</code>.</small></p>
         <hr/>
         <h2>Manage Packages</h2>
-        { packageKeys.length > 1 ? <a href='#' onClick={ this.clearPackages }>remove all &#x2716;</a> : '' }
         <ul>
           { packageKeys.length !== 0 ? packageKeys.map(createPackageListItem) : <li>No packages added. Add some old sport.</li> }
         </ul>
+        { packageKeys.length > 1 ? <a href='#' onClick={ this.clearPackages }>remove all &#x2716;</a> : '' }
         <hr/>
         <h2>Stats</h2>
         <p>Time scale
@@ -137,7 +138,6 @@ var MNS = React.createClass({
             { createTimeScaleOptions }
           </select>
         </p>
-        <a href='#' onClick={ this.fetchStats }>fetch &#10153;</a>
         <table>
           <thead>
             <tr>
@@ -148,16 +148,19 @@ var MNS = React.createClass({
            <tfoot>
             <tr>
               <td><b>TOTAL</b></td>
-              <td style={ cellStyle }>{ packageKeys.map(getDownloads).reduce(sum, 0) }</td>
+              <td style={ cellStyle }><b>{ packageKeys.map(getDownloads).reduce(sum, 0) }</b></td>
             </tr>
           </tfoot>
           <tbody>
             { packageKeys.map(createPackageTableItem) }
           </tbody>
         </table>
+        <br/>
+        <a href='#' onClick={ this.fetchStats }>fetch data &#10153;</a>
+        <hr/>
         <footer>
           <br/>
-          <small>Another useless/silly thing built with &hearts; by <a href='http://www.twitter.com/waltfy'>waltfy</a>. Although... it needs a bit more love.</small>
+          <small>Another <i>useless</i> thing built with &hearts; by <a href='http://www.twitter.com/waltfy'>waltfy</a>. Although... it needs a bit more &hearts;.</small>
         </footer>
       </div>
     );
