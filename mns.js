@@ -1,20 +1,24 @@
 /** @jsx React.DOM */
-function supportsLocalStorage() {
+var supportsLocalStorage = (function () {
   try {
     return 'localStorage' in window && window.localStorage !== null;
   } catch (e) {
     return false;
   }
-}
+}).bind(window);
 
 var MNS = React.createClass({
 
   getInitialState: function () {
     return {
-      packages: {},
+      packages: JSON.parse(localStorage.getItem("packages")) || {},
       name: '',
       timeScale: 'last-month'
     };
+  },
+
+  persist: function () {
+    if (supportsLocalStorage) localStorage.setItem("packages", JSON.stringify(this.state.packages));
   },
 
   handlePackageNameChange: function (e) {
@@ -22,7 +26,7 @@ var MNS = React.createClass({
   },
 
   setTimeScale: function (e) {
-    this.setState({ timeScale: e.target.value });
+    this.setState({ timeScale: e.target.value }, this.fetchStats);
   },
 
   addPackage: function (e) {
@@ -30,20 +34,21 @@ var MNS = React.createClass({
     if (this.state.name === '') return alert('Add a package name, fool.');
     var packages = this.state.packages;
     packages[this.state.name] = 0;
-    this.setState({ packages: packages, name: '' });
+    this.setState({ packages: packages, name: '' }, this.persist.bind(this));
   },
 
   removePackage: function (pack, e) {
     var packages = this.state.packages;
     delete packages[pack];
-    this.setState({ packages: packages });
+    this.setState({ packages: packages }, this.persist.bind(this));
   },
 
   clearPackages: function () {
-    this.setState({ packages: {} });
+    this.setState({ packages: {} }, this.persist.bind(this));
   },
 
   fetchStats: function () {
+
     Object.keys(this.state.packages).forEach(function (pack) {
 
       var self = this;
@@ -55,7 +60,7 @@ var MNS = React.createClass({
       req.onload = function () {
         var packages = self.state.packages;
         packages[pack] = JSON.parse(req.responseText).downloads;
-        self.setState({ packages: packages });
+        self.setState({ packages: packages }, self.persist.bind(this));
       };
 
       req.onerror = function () {
@@ -106,13 +111,13 @@ var MNS = React.createClass({
         <input onChange={ this.handlePackageNameChange } value={ this.state.name } onKeyUp={ this.addPackage } placeholder='Package name...'/>
         <button onClick={ this.addPackage }>Add +</button>
         <hr/>
-        <h2>manage packages</h2>
+        <h2>Manage Packages</h2>
         { packageKeys.length > 1 ? <a href='#' onClick={ this.clearPackages }>remove all &#x2716;</a> : '' }
         <ul>
           { packageKeys.length !== 0 ? packageKeys.map(createPackageListItem) : <li>No packages added. Add some old sport.</li> }
         </ul>
         <hr/>
-        <h2>see stats results</h2>
+        <h2>Stats</h2>
         <p>Time scale
           <select onChange={ this.setTimeScale } value={ this.state.timeScale }>
             { createTimeScaleOptions }
