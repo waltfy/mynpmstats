@@ -49,21 +49,24 @@ var MNS = React.createClass({
 
   removePackage: function (pack, e) {
     var packages = this.state.packages;
+    var fetched = this.state.fetched;
     delete packages[pack];
-    this.setState({ packages: packages }, this.persist.bind(MNS));
+    fetched = fetched.splice(fetched.indexOf(pack), 1);
+    this.setState({ packages: packages }, this.persist);
   },
 
   clearPackages: function () {
-    this.setState({ packages: {} }, this.persist.bind(MNS));
+    this.setState({ packages: {}, fetched: [] }, this.persist);
   },
 
   fetchStats: function () {
+    var state = this.state;
+    var self = this;
 
-    Object.keys(this.state.packages).forEach(function (pack) {
+    Object.keys(state.packages).forEach(function (pack) {
 
-      var self = this;
-      var fetched = this.state.fetched;
-      var url = 'https://api.npmjs.org/downloads/point/' + this.state.timeScale + '/' + pack;
+      var fetched = state.fetched;
+      var url = 'https://api.npmjs.org/downloads/point/' + state.timeScale + '/' + pack;
       var req = new XMLHttpRequest();
 
       if (fetched.indexOf(pack) >= 0) return;
@@ -74,7 +77,7 @@ var MNS = React.createClass({
         var packages = self.state.packages;
         packages[pack] = JSON.parse(req.responseText).downloads;
         fetched.push(pack);
-        self.setState({ packages: packages,  }, self.persist.bind(this));
+        self.setState({ packages: packages,  }, self.persist);
       };
 
       req.onerror = function () {
@@ -82,11 +85,11 @@ var MNS = React.createClass({
       };
 
       req.send();
-    }.bind(this));
+    });
   },
 
   render: function () {
-
+    var self = this;
     var packageKeys = Object.keys(this.state.packages);
     var packages = this.state.packages;
 
@@ -100,19 +103,19 @@ var MNS = React.createClass({
       return <option key={ index } value={ option }>{ label }</option>;
     });
 
-    var createPackageListItem = (function (pack, index) {
-      return <li key={ index }>{ pack } &nbsp; <a href='#' onClick={ this.removePackage.bind(this, pack) }>&#x2716;</a></li>;
-    }).bind(this);
+    var createPackageListItem = function (pack, index) {
+      return <li key={ index }>{ pack } &nbsp; <a href='#' onClick={ self.removePackage.bind(self, pack) }>&#x2716;</a></li>;
+    };
 
-    var createPackageTableItem = (function (pack, index) {
+    var createPackageTableItem = function (pack, index) {
       var downloads = packages[pack];
       return <tr key={ index }><td>{ pack }</td><td style={ cellStyle }>{ downloads }</td></tr>;
-    }).bind(this);
+    };
 
-    var getDownloads = (function (key) {
+    var getDownloads = function (key) {
       var downloads = packages[key];
       return downloads;
-    }).bind(this);
+    };
 
     var sum = function (fold, next) {
       return fold + next;
