@@ -118,7 +118,6 @@ var MNS = React.createClass({
     };
 
     var sum = function (fold, next) {
-      console.debug(next);
       return fold + next;
     };
 
@@ -152,7 +151,7 @@ var MNS = React.createClass({
            <tfoot>
             <tr>
               <td><b>TOTAL</b></td>
-              <td style={ cellStyle }><b>{ packageKeys.map(getDownloads).reduce(sum, 0) }</b></td>
+              <td style={ cellStyle }><b>{ packageKeys.map(getDownloads).filter(function (item) { return !!item; }).reduce(sum, 0) }</b></td>
             </tr>
           </tfoot>
           <tbody>
