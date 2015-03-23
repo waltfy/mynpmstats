@@ -118,6 +118,7 @@ var MNS = React.createClass({
     };
 
     var sum = function (fold, next) {
+      console.debug(next);
       return fold + next;
     };
 
